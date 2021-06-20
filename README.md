@@ -1,5 +1,5 @@
 # scale_manager
-
+https://github.com/flutterninja9/scale_manager/actions/workflows/dart.yml/badge.svg
 A new Flutter package project.
 
 ## Getting Started
