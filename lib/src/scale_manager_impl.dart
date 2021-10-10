@@ -1,29 +1,43 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 
 class ScaleManager {
-  /// Basic [BuildContext] of your app
-  final BuildContext context;
+  static late Size deviceBlockSize;
+  static late double heightMultiplier;
+  static late double imageSizeMultiplier;
+  static bool isMobilePortrait = false;
+  static bool isPortrait = true;
+  static late double textMultiplier;
+  static late double widthMultiplier;
 
-  /// Device mockup width used in Figma
-  /// PS: Hover on any Figma mockup screen to get it
-  final double kMockupWidth;
+  static double _blockHeight = 0;
+  static double _blockWidth = 0;
+  static late double _screenHeight;
+  static late double _screenWidth;
 
-  ScaleManager({
-    @required this.context,
-    @required this.kMockupWidth,
-  });
+  void init(
+      BoxConstraints constraints, Orientation orientation, Size mockupSize) {
+    if (orientation == Orientation.portrait) {
+      _screenWidth = mockupSize.width;
+      _screenHeight = mockupSize.height;
+      isPortrait = true;
+      if (_screenWidth < 450) {
+        isMobilePortrait = true;
+      }
+    } else {
+      _screenWidth = mockupSize.height;
+      _screenHeight = mockupSize.width;
+      isPortrait = false;
+      isMobilePortrait = false;
+    }
 
-  /// Returns the current [deviceWidth] fetched via [MediaQuery]
-  double get deviceWidth => MediaQuery.of(context).size.width;
+    _blockWidth = _screenWidth / 100;
+    _blockHeight = _screenHeight / 100;
 
-  /// Returns the calculated [imageFactor] which should be used in Image parts
-  double get imageFactor => kMockupWidth / deviceWidth;
-
-  /// Returns the calculated [textScaleFactor] which should be used in Text styling
-  double get textScaleFactor => deviceWidth / kMockupWidth;
-
-  /// Returns the calculated [spaceScale] which should be used in
-  /// places like Padding or Margin values, SizedBox values or other const places
-  double spaceScale({@required double space}) =>
-      space / kMockupWidth * deviceWidth;
+    textMultiplier = _blockHeight;
+    imageSizeMultiplier = _blockWidth;
+    heightMultiplier = _blockHeight;
+    widthMultiplier = _blockWidth;
+    deviceBlockSize = Size(_blockWidth, _blockHeight);
+  }
 }
