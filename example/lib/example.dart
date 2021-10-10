@@ -5,17 +5,30 @@ void main() {
   runApp(MyApp());
 }
 
+const Size kMockupSize = Size(411, 731);
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Scale Manager Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(),
-      debugShowCheckedModeBanner: false,
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      return OrientationBuilder(
+        builder: (context, orientation) {
+          ScaleManager().init(
+            constraints,
+            orientation,
+            kMockupSize,
+          );
+          return MaterialApp(
+            title: 'Scale Manager Demo',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            home: MyHomePage(),
+            debugShowCheckedModeBanner: false,
+          );
+        },
+      );
+    });
   }
 }
 
@@ -27,7 +40,6 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scaleManager = ScaleManager(kMockupWidth: 411, context: context);
     return Scaffold(
       body: Center(
         child: Column(
@@ -36,27 +48,22 @@ class MyHomePage extends StatelessWidget {
             SizedBox(
               /// Use spaceScale() at places like margin padding or when giving
               /// const sizes
-              height: scaleManager.spaceScale(space: 300),
-              width: scaleManager.spaceScale(space: 300),
+              height: 300.ims,
+              width: 300.ims,
 
               /// Example place of imageFactor
-              child: Image.network(
-                testImagUrl,
-                scale: scaleManager.imageFactor,
-              ),
+              child: Image.network(testImagUrl, fit: BoxFit.contain),
             ),
-            SizedBox(
-              height: scaleManager.spaceScale(space: 30),
-            ),
+            SizedBox(height: 10.h),
 
             /// Example place of textFactor
             /// Note that textScale will only work if you have given it some size in [TextStyle]
             /// The textSize which you will pass in [TextStyle] can be obtained from your Figma design file
             Text(
               "Text Scale in action",
-              style: const TextStyle(fontSize: 22),
-              textScaleFactor: scaleManager.textScaleFactor,
+              style: TextStyle(fontSize: 22.ts),
             ),
+            SizedBox(height: 10.h),
           ],
         ),
       ),
